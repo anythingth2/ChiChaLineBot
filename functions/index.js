@@ -17,6 +17,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+console.log(config)
+const handleMessage = (event) => {
+
+    return lineClient.replyMessage(event.replyToken, event.message);
+}
+const handleBeacon = (event) => {
+    return lineClient.replyMessage(event.replyToken, { type: 'text', text: `สวัสดี ฉันคือ ${event.beacon.hwid} คุณ ${event.beacon.type}` })
+}
 
 app.use('/', line.middleware({
     channelSecret: config.lineChannelSecret,
@@ -26,9 +34,14 @@ app.use('/', line.middleware({
     // console.log(events);
     Promise.all(events.map((event) => {
         console.log(event);
-        return lineClient.replyMessage(event.replyToken, event.message);
+        if (event.type == 'beacon')
+            return handleBeacon(event);
+        else if (event.type == 'message')
+            return handleMessage(event);
+
+
     })).then(() => {
-        res.json({});
+        res.status(200).json({});
     });
 
 });
