@@ -2,7 +2,10 @@ const line = require('@line/bot-sdk');
 const config = require('../../../config');
 
 console.log(config)
-
+const lineClient = new line.Client({
+    channelSecret: config.lineChannelSecret,
+    channelAccessToken: config.lineChannelAccessToken
+});
 const middleware = line.middleware({
     channelSecret: config.lineChannelSecret,
     channelAccessToken: config.lineChannelAccessToken
